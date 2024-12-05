@@ -78,8 +78,6 @@ func main() {
 			foundS, locationS, directionS := findLetterNextTo("S", location, inputSlice, i)
 
 			if foundS {
-				fmt.Println(location, locationS, directionS, "S")
-
 				directionOpposite, directionOppositeErr := getOppositeCorner(directionS)
 
 				if directionOppositeErr != nil {
@@ -89,8 +87,6 @@ func main() {
 				foundM, locationM, _ := findLetterNextTo("M", location, inputSlice, directionOpposite)
 
 				if foundM {
-					fmt.Println(location, locationM, directionOpposite, "M")
-
 					found = append(found, locationS)
 					found = append(found, locationM)
 				}
@@ -104,7 +100,6 @@ func main() {
 	}
 
 	fmt.Println("Part 2: ", len(xMasMap))
-
 }
 
 func findLetterNextTo(letter string, location []int, inputSlice []string, direction int) (bool, []int, int) {
