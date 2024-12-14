@@ -9,113 +9,113 @@ import (
 )
 
 func main() {
-	fmt.Println("Day 6")
+	input, _ := os.ReadFile("input")
+	inputS := string(input)
 
-	input, _ := os.ReadFile("input-sample")
-	inputString := string(input)
-	sum := 0
-	sum2 := 0
+	part1 := 0
+	part2 := 0
 
-	for _, line := range strings.Split(inputString, "\n") {
+	for _, line := range strings.Split(inputS, "\n") {
 		if line == "" {
 			continue
 		}
 
-		sum += processLine(line)
-		sum2 += processLinePart2(line)
+		part1 += processLinePart1(line)
+		part2 += processLinePart2(line)
 	}
 
-	fmt.Println("Part 1", sum)
-	fmt.Println("Part 2", sum2)
+	println()
+	fmt.Println("part 1", part1)
+	fmt.Println("part 2", part2)
 }
 
-func processLine(line string) int {
-	parts := strings.Split(line, ": ")
-	goal, _ := strconv.Atoi(parts[0])
-	items := strings.Split(parts[1], " ")
-	possibilities := powInt(2, len(items)-1)
+func processLinePart1(line string) int {
+	lineParts := strings.Split(line, ": ")
+	goal, _ := strconv.Atoi(lineParts[0])
+	options := strings.Split(lineParts[1], " ")
+	possibilities := math.Pow(2, float64(len(options)-1))
 
-	for i := 0; i < possibilities; i++ {
-		total := 0
+	for i := 0; i < int(possibilities); i++ {
+		total, _ := strconv.Atoi(options[0])
 
-		for j := 0; j < len(items)-1; j++ {
+		for j := 0; j < len(options)-1; j++ {
 			operator := (i >> j) & 1
+			next, _ := strconv.Atoi(options[j+1])
 
-			if total == 0 {
-				if operator == 0 {
-					//					fmt.Println(items[j], "+", strToInt(items[j+1]))
-					total += (strToInt(items[j]) + strToInt(items[j+1]))
-
-					continue
-				}
-
-				if operator == 1 {
-					//					fmt.Println(items[j], "*", strToInt(items[j+1]))
-					total += (strToInt(items[j]) * strToInt(items[j+1]))
-					continue
-				}
-				continue
-			}
-
-			if operator == 0 {
-				//				fmt.Println(total, "+", strToInt(items[j+1]))
-				total = (total + strToInt(items[j+1]))
-
-				continue
-			}
-
-			if operator == 1 {
-				//				fmt.Println(total, "*", strToInt(items[j+1]))
-				total = (total * strToInt(items[j+1]))
-				continue
+			switch operator {
+			case 0:
+				total += next
+			case 1:
+				total *= next
 			}
 		}
 
-		//		fmt.Println(items, total, goal)
-
 		if total == goal {
-			return total
+			return goal
 		}
 	}
 
 	return 0
-}
-
-func strToInt(value string) int {
-	val, _ := strconv.Atoi(value)
-	return val
-}
-
-func powInt(x, y int) int {
-	return int(math.Pow(float64(x), float64(y)))
 }
 
 func processLinePart2(line string) int {
-	parts := strings.Split(line, ": ")
-	goal, _ := strconv.Atoi(parts[0])
-	items := strings.Split(parts[1], " ")
-	possibilities := powInt(3, len(items)-1)
+	lineParts := strings.Split(line, ": ")
+	goal, _ := strconv.Atoi(lineParts[0])
+	options := strings.Split(lineParts[1], " ")
+	possibilities := math.Pow(3, float64(len(options)-1))
 
-	fmt.Println(items, goal)
+	// fmt.Println(goal)
 
-	for i := 0; i < possibilities; i++ {
-		total := 0
+	for i := 0; i < int(possibilities); i++ {
+		total, _ := strconv.Atoi(options[0])
 
-		for j := 0; j < len(items)-1; j++ {
-			//operator := i % 3
-			operator := (i / powInt(3, j)) % 3
+		for j := 0; j < len(options)-1; j++ {
+			operator := (i / int(math.Pow(3, float64(j)))) % 3
+			next, _ := strconv.Atoi(options[j+1])
 
-			fmt.Print(operator)
+			switch operator {
+			case 0:
+				total += next
+			case 1:
+				total *= next
+			case 2:
+				total, _ = strconv.Atoi(strconv.Itoa(total) + options[j+1])
+			}
 		}
 
-		println()
-
 		if total == goal {
-			fmt.Println(items, goal)
-			return total
+			return goal
 		}
 	}
 
 	return 0
-	// panic(1)
+}
+
+func processLinePart22(options []int, goal int) int {
+	possibilities := math.Pow(2, float64(len(options)-1))
+
+	for i := 0; i < int(possibilities); i++ {
+		total := options[0]
+
+		for j := 0; j < len(options)-1; j++ {
+			operator := (i >> j) & 1
+			next := options[j+1]
+
+			switch operator {
+			case 0:
+				total += next
+			case 1:
+				total *= next
+			}
+		}
+
+		if total == goal {
+			fmt.Println(goal, options)
+			return goal
+		}
+	}
+
+	fmt.Println(goal, possibilities, options)
+
+	return 0
 }
